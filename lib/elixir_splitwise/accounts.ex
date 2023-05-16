@@ -6,7 +6,7 @@ defmodule ElixirSplitwise.Accounts do
   import Ecto.Query, warn: false
   alias ElixirSplitwise.Repo
 
-  alias ElixirSplitwise.Accounts.{User, UserToken, UserNotifier}
+  alias ElixirSplitwise.Accounts.{User, UserToken, UserNotifier, Friendship}
 
   ## Database getters
 
@@ -350,4 +350,28 @@ defmodule ElixirSplitwise.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def add_friend(email, current_user) do
+    register_friend(email)
+    |> create_friendship(current_user)
+  end
+
+  def register_friend(email) do
+    get_user_by_email(email)
+    |> case do
+      nil ->
+        %User{}
+        |> User.friend_registration_changeset(%{"email" => email})
+        |> Repo.insert()
+      user -> {:ok, user}
+    end
+  end
+
+  # TODO: def create_friendship({:error, _})
+  def create_friendship({:ok, user}, current_user) do
+    %Friendship{}
+    |> Friendship.changeset(%{"user1_id" => current_user.id, "user2_id" => user.id})
+    |> Repo.insert()
+  end
+
 end
