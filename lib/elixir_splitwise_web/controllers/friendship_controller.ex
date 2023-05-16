@@ -9,5 +9,6 @@ defmodule ElixirSplitwiseWeb.FriendshipController do
 
   def create(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"email" => email}) do
     Accounts.add_friend(email, current_user)
+    redirect(conn, to: "/")
   end
 end

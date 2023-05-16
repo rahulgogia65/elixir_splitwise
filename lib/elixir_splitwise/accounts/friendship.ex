@@ -1,8 +1,10 @@
 defmodule ElixirSplitwise.Accounts.Friendship do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
+
   alias ElixirSplitwise.Repo
-  alias ElixirSplitwise.Accounts.User
+  alias ElixirSplitwise.Accounts.{User, Friendship}
   schema "friendships" do
 
     field :user1_id, :id
@@ -17,6 +19,7 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     |> cast(attrs, [:user1_id, :user2_id])
     |> validate_user_existence()
     |> validate_different_users()
+    |> valdate_unique_friendship()
   end
 
   defp validate_user_existence(changeset) do
@@ -52,4 +55,23 @@ defmodule ElixirSplitwise.Accounts.Friendship do
       |> add_error(:user2_id, "You cannot add yourself as a friend")
     end
   end
+
+  defp valdate_unique_friendship(changeset) do
+    user1_id = get_change(changeset, :user1_id)
+    user2_id = get_change(changeset, :user2_id)
+
+    query = from f in Friendship,
+      where: (
+        (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
+        (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
+      )
+
+    if Repo.exists?(query) do
+      changeset
+      |> add_error(:id, "Friendship Alreay exists")
+    else
+      changeset
+    end
+  end
+
 end
