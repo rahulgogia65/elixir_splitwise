@@ -4,6 +4,7 @@ defmodule ElixirSplitwise.Accounts do
   """
 
   import Ecto.Query, warn: false
+  use Phoenix.VerifiedRoutes, router: ElixirSplitwiseWeb.Router, endpoint: ElixirSplitwiseWeb.Endpoint
   alias ElixirSplitwise.Repo
 
   alias ElixirSplitwise.Accounts.{User, UserToken, UserNotifier, Friendship}
@@ -363,6 +364,7 @@ defmodule ElixirSplitwise.Accounts do
         %User{}
         |> User.friend_registration_changeset(%{"email" => email})
         |> Repo.insert()
+        |> send_invitation_email()
       user -> {:ok, user}
     end
   end
@@ -374,4 +376,10 @@ defmodule ElixirSplitwise.Accounts do
     |> Repo.insert()
   end
 
+  def send_invitation_email({:ok, user}) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "register")
+
+    Repo.insert!(user_token)
+    UserNotifier.deliver_new_registration_email(user, url( ~p"/"))
+  end
 end
