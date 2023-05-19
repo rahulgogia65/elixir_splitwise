@@ -380,6 +380,32 @@ defmodule ElixirSplitwise.Accounts do
     {encoded_token, user_token} = UserToken.build_email_token(user, "register")
 
     Repo.insert!(user_token)
-    UserNotifier.deliver_new_registration_email(user, url( ~p"/"))
+    UserNotifier.deliver_new_registration_email(user, url( ~p"/users/register/#{encoded_token}"))
+
+    {:ok, user}
+  end
+
+  def add_user(user, attrs \\ %{}) do
+    User.registration_changeset(user, attrs, validate_email: false)
+  end
+
+  def get_user_by_register_token(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "register"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  def add_friend_user(user, attrs) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.registration_changeset(user, attrs, validate_email: false))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 end

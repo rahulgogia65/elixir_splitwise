@@ -18,7 +18,7 @@ defmodule ElixirSplitwiseWeb.Router do
   end
 
   scope "/", ElixirSplitwiseWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_authenticated_user]
 
     get "/", PageController, :home
     get "/add_friend", FriendshipController, :new
@@ -54,6 +54,8 @@ defmodule ElixirSplitwiseWeb.Router do
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
+    get "/users/register/:token", UserRegistrationController, :edit
+    put "/users/register/:token", UserRegistrationController, :update
     get "/users/log_in", UserSessionController, :new
     post "/users/log_in", UserSessionController, :create
     get "/users/reset_password", UserResetPasswordController, :new
