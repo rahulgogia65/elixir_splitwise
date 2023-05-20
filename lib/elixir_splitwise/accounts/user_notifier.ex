@@ -76,4 +76,16 @@ defmodule ElixirSplitwise.Accounts.UserNotifier do
     ==============================
     """)
   end
+
+  def deliver_new_registration_email(user, url) do
+    deliver(user.email, "Create Your Account", """
+    =============================
+    Hi #{user.email},
+
+    You can set your password by visiting the URL below:
+
+    #{url}
+    =============================
+    """)
+  end
 end

@@ -4,9 +4,10 @@ defmodule ElixirSplitwise.Accounts do
   """
 
   import Ecto.Query, warn: false
+  use Phoenix.VerifiedRoutes, router: ElixirSplitwiseWeb.Router, endpoint: ElixirSplitwiseWeb.Endpoint
   alias ElixirSplitwise.Repo
 
-  alias ElixirSplitwise.Accounts.{User, UserToken, UserNotifier}
+  alias ElixirSplitwise.Accounts.{User, UserToken, UserNotifier, Friendship}
 
   ## Database getters
 
@@ -343,6 +344,63 @@ defmodule ElixirSplitwise.Accounts do
   def reset_user_password(user, attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
+    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  def add_friend(email, current_user) do
+    register_friend(email)
+    |> create_friendship(current_user)
+  end
+
+  def register_friend(email) do
+    get_user_by_email(email)
+    |> case do
+      nil ->
+        %User{}
+        |> User.friend_registration_changeset(%{"email" => email})
+        |> Repo.insert()
+        |> send_invitation_email()
+      user -> {:ok, user}
+    end
+  end
+
+  # TODO: def create_friendship({:error, _})
+  def create_friendship({:ok, user}, current_user) do
+    %Friendship{}
+    |> Friendship.changeset(%{"user1_id" => current_user.id, "user2_id" => user.id})
+    |> Repo.insert()
+  end
+
+  def send_invitation_email({:ok, user}) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "register")
+
+    Repo.insert!(user_token)
+    UserNotifier.deliver_new_registration_email(user, url( ~p"/users/register/#{encoded_token}"))
+
+    {:ok, user}
+  end
+
+  def add_user(user, attrs \\ %{}) do
+    User.registration_changeset(user, attrs, validate_email: false)
+  end
+
+  def get_user_by_register_token(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "register"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  def add_friend_user(user, attrs) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, User.registration_changeset(user, attrs, validate_email: false))
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
     |> Repo.transaction()
     |> case do

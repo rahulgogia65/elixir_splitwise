@@ -1,0 +1,13 @@
+<div class="mx-auto max-w-sm">
+  <.header class="text-center">
+    Add a friend
+  </.header>
+
+  <.simple_form :let={f} for={@conn.params} action={~p"/add_friend"}>
+    <.input field={f[:email]} type="email" label="Email" required />
+
+    <:actions>
+      <.button phx-disable-with="Sending Invite..." class="w-full">Add friend</.button>
+    </:actions>
+  </.simple_form>
+</div>

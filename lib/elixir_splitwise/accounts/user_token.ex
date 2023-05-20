@@ -111,13 +111,20 @@ defmodule ElixirSplitwise.Accounts.UserToken do
     case Base.url_decode64(token, padding: false) do
       {:ok, decoded_token} ->
         hashed_token = :crypto.hash(@hash_algorithm, decoded_token)
-        days = days_for_context(context)
 
-        query =
+        query = if context == "register" do
+          from token in token_and_context_query(hashed_token, context),
+            join: user in assoc(token, :user),
+            where: token.sent_to == user.email,
+            select: user
+        else
+          days = days_for_context(context)
+
           from token in token_and_context_query(hashed_token, context),
             join: user in assoc(token, :user),
             where: token.inserted_at > ago(^days, "day") and token.sent_to == user.email,
             select: user
+        end
 
         {:ok, query}
 
