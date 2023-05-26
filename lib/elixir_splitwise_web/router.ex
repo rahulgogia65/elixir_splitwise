@@ -21,8 +21,10 @@ defmodule ElixirSplitwiseWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     get "/", PageController, :home
-    get "/add_friend", FriendshipController, :new
-    post "/add_friend", FriendshipController, :create
+    get "/friend/add", FriendshipController, :new
+    post "/friend/add", FriendshipController, :create
+    get "/group/new", GroupController, :new
+    post "/group/new", GroupController, :create
   end
 
   # Other scopes may use custom stacks.

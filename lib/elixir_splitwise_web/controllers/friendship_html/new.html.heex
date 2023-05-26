@@ -3,7 +3,7 @@
     Add a friend
   </.header>
 
-  <.simple_form :let={f} for={@conn.params} action={~p"/add_friend"}>
+  <.simple_form :let={f} for={@conn.params} action={~p"/friend/add"}>
     <.input field={f[:email]} type="email" label="Email" required />
 
     <:actions>

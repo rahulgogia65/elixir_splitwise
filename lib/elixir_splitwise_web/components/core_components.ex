@@ -566,6 +566,7 @@ defmodule ElixirSplitwiseWeb.CoreComponents do
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
+    IO.puts(selector)
     JS.show(js,
       to: selector,
       transition:
@@ -585,6 +586,8 @@ defmodule ElixirSplitwiseWeb.CoreComponents do
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end
+
+
 
   def show_modal(js \\ %JS{}, id) when is_binary(id) do
     js

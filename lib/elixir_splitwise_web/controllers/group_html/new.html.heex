@@ -1,0 +1,27 @@
+<div class="mx-auto max-w-sm">
+    <.header class="text-center">
+      Start a new group
+    </.header>
+  
+    <.simple_form :let={f} for={@conn.params} action={~p"/group/new"}>
+      <.input field={f[:group_name]} type="text" label="My group shall be called..." required />
+      <br/>
+      Group members 
+      <br/>
+      <div id="add-members">
+      Tip: Lots of people to add? Send your friends an <button phx-click={show_and_hide("#add-members", "#invite-link")}> invite link.</button>
+        <.input field={f[:name]} type="text" placeholder="Name" required />
+        <.input field={f[:email]} type="email" placeholder="Email" required />
+      </div>
+
+      <div id="invite-link" class="hidden">
+        Send this link to your friends, and when they click it, they'll automatically be added to this group.
+
+        <button phx-click={show_and_hide("#invite-link", "#add-members")}>Or add group members manually</button>
+      </div>
+      <:actions>
+        <.button phx-disable-with="Sending Invite..." class="w-full">Add friend</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+  
