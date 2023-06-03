@@ -566,7 +566,6 @@ defmodule ElixirSplitwiseWeb.CoreComponents do
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
-    IO.puts(selector)
     JS.show(js,
       to: selector,
       transition:
