@@ -9,7 +9,7 @@
       Group members 
       <br/>
       <div id="add-members">
-        Tip: Lots of people to add? Send your friends an <button phx-click={show_and_hide("#add-members", "#invite-link")}> invite link.</button>
+        Tip: Lots of people to add? Send your friends an <button phx-click={hide_and_show("#add-members", "#invite-link")}> invite link.</button>
         <br>
         <br>
         <%= @current_user.name %> <%= @current_user.email %>
@@ -20,7 +20,7 @@
       <div id="invite-link" class="hidden">
         Send this link to your friends, and when they click it, they'll automatically be added to this group.
 
-        <button phx-click={show_and_hide("#invite-link", "#add-members")}>Or add group members manually</button>
+        <button phx-click={hide_and_show("#invite-link", "#add-members")}>Or add group members manually</button>
       </div>
       <br>
       <.input field={f[:group_type]} type="select" options={options} label="Group type" required />

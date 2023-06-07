@@ -7,6 +7,10 @@ defmodule ElixirSplitwise.Accounts.Group do
     field :participant_ids, {:array, :integer}
     field :simplify_group_debts, :boolean, default: false
     field :type, :string
+    field :name, :string
+
+    many_to_many :users, ElixirSplitwise.Accounts.User,
+      join_through: "group_members"
 
     timestamps()
   end
@@ -14,7 +18,7 @@ defmodule ElixirSplitwise.Accounts.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:type, :participant_ids, :invite_link, :simplify_group_debts])
-    |> validate_required([:type, :participant_ids, :invite_link, :simplify_group_debts])
+    |> cast(attrs, [:type, :participant_ids, :invite_link, :simplify_group_debts, :name])
+    |> validate_required([:type, :participant_ids, :invite_link, :simplify_group_debts, :name])
   end
 end
