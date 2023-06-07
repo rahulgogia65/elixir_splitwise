@@ -25,6 +25,12 @@ defmodule ElixirSplitwiseWeb.Router do
     post "/add_friend", FriendshipController, :create
   end
 
+  scope "/", ElixirSplitwiseWeb.Live do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/dashboard", DashboardLive
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", ElixirSplitwiseWeb do
   #   pipe_through :api
