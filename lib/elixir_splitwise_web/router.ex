@@ -18,17 +18,22 @@ defmodule ElixirSplitwiseWeb.Router do
   end
 
   scope "/", ElixirSplitwiseWeb do
+    pipe_through :browser
+    get "/", PageController, :home
+  end
+
+  scope "/", ElixirSplitwiseWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", PageController, :home
     get "/add_friend", FriendshipController, :new
     post "/add_friend", FriendshipController, :create
   end
 
   scope "/", ElixirSplitwiseWeb.Live do
-    pipe_through [:browser, :require_authenticated_user]
-
-    live "/dashboard", DashboardLive
+    pipe_through :browser
+    live_session(:default) do
+      live "/dashboard", DashboardLive
+    end
   end
 
   # Other scopes may use custom stacks.

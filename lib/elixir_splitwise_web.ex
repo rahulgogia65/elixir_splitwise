@@ -54,6 +54,7 @@ defmodule ElixirSplitwiseWeb do
       use Phoenix.LiveView,
         layout: {ElixirSplitwiseWeb.Layouts, :app}
 
+      on_mount ElixirSplitwiseWeb.UserLiveAuth
       unquote(html_helpers())
     end
   end
