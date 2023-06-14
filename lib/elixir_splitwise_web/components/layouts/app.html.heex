@@ -2,8 +2,9 @@
   <div class="flex justify-between items-center bg-splitwise-green">
     <a href="/" class="pl-20"><img src={~p"/images/splitwise.png"} alt="Splitwise logo" width="100"></a>
     <%= if @current_user do %>
-      <div class="float-right px-20">
-        <%= @current_user.name %>
+      <div class="float-right px-10">
+        <span class="pr-5"><%= @current_user.name %></span>
+        <.button_link href={~p"/users/log_out"} method="delete">Log Out</.button_link>
       </div>
     <% end %>
   </div>
