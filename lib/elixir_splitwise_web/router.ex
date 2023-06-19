@@ -61,7 +61,7 @@ defmodule ElixirSplitwiseWeb.Router do
   ## Authentication routes
 
   scope "/", ElixirSplitwiseWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :disable_app_layout]
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
@@ -91,5 +91,10 @@ defmodule ElixirSplitwiseWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
+  def disable_app_layout(conn, _opts) do
+    conn
+    |> put_layout(false)
   end
 end
