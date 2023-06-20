@@ -23,16 +23,16 @@ defmodule ElixirSplitwiseWeb.Router do
   end
 
   scope "/", ElixirSplitwiseWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :disable_app_layout]
 
     get "/add_friend", FriendshipController, :new
     post "/add_friend", FriendshipController, :create
   end
 
   scope "/", ElixirSplitwiseWeb.Live do
-    pipe_through :browser
+    pipe_through [:browser, :require_authenticated_user]
     live_session(:default) do
-      live "/dashboard", DashboardLive
+      live "/dashboard", Dashboard.DashboardLive
     end
   end
 

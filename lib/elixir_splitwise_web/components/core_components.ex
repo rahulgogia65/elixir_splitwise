@@ -225,7 +225,7 @@ defmodule ElixirSplitwiseWeb.CoreComponents do
   end
 
 
-  
+
   attr :href, :string, required: true
   attr :method, :string, required: true
   attr :class, :string, default: nil
@@ -237,7 +237,7 @@ defmodule ElixirSplitwiseWeb.CoreComponents do
       href={@href}
       method={@method}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-slate-700 hover:bg-slate-900 py-2 px-3",
+        "phx-submit-loading:opacity-75 rounded-lg py-2 px-3",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
         @class
       ]}

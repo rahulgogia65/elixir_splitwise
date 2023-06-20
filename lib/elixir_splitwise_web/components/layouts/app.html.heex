@@ -27,7 +27,7 @@
       </div>
       <div class="flex mt-4 justify-between bg-slate-300 px-2 py-1">
         <span>Friends</span>
-        <span class="cursor-pointer">+Add</span>
+        <span class="cursor-pointer" phx-click={show_modal("add_friends")}>+Add</span>
       </div>
       <div class="mt-1">
         No friends yet
@@ -41,8 +41,10 @@
       <.button_link href={~p"/dashboard"} method="get" class="ml-2 bg-teal-400">Settle Up</.button_link>
     </div>
   </div>
-  <!--<div class="mx-auto max-w-2xl">
+  <div class="mx-auto max-w-2xl">
     <.flash_group flash={@flash} />
     <%= @inner_content %>
-  </div>-->
+  </div>
+
+  <%= live_render(@socket, ElixirSplitwiseWeb.Live.Dashboard.Modals.AddFriend, id: "add_friend") %>
 </main>
