@@ -1,6 +1,7 @@
 defmodule ElixirSplitwise.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias ElixirSplitwise.Repo
 
   schema "users" do
     field :name, :string
@@ -159,5 +160,9 @@ defmodule ElixirSplitwise.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def friends(user) do
+
   end
 end

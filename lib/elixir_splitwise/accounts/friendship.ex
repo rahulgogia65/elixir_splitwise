@@ -74,4 +74,10 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     end
   end
 
+  def get_friend_list_for(user_id) do
+    query = from f in Friendship,
+      where: f.user1_id == ^user_id,
+      select: f.user2_id
+    friends = Repo.all query
+  end
 end
