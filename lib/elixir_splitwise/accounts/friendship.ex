@@ -74,10 +74,40 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     end
   end
 
-  def get_friend_list_for(user_id) do
+  def get_friends_id_list_for(user_id) do
     query = from f in Friendship,
-      where: f.user1_id == ^user_id,
-      select: f.user2_id
-    friends = Repo.all query
+    where: f.user1_id == ^user_id or f.user2_id == ^user_id,
+    select: {f.user1_id, f.user2_id}
+
+    friend_ids = Repo.all(query)
+    |> Enum.flat_map(fn {user1_id, user2_id} ->
+      case user1_id do
+        ^user_id -> [user2_id]
+        _ -> [user1_id]
+      end
+    end)
+    |> Enum.uniq()
+  end
+
+  def get_friend_names(friend_ids) do
+    query = from u in User,
+      where: u.id in ^friend_ids,
+      select: u.name
+
+    Repo.all(query)
+  end
+
+  def get_friend_name(current_user, id) do
+    friendship = Repo.get(Friendship, id)
+
+    friend_id =
+      if current_user.id == friendship.user1_id do
+        friendship.user2_id
+      else
+        friendship.user1_id
+      end
+
+    friend = Repo.get(User, friend_id)
+    friend.name
   end
 end

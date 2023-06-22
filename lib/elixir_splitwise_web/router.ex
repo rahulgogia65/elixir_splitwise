@@ -1,4 +1,5 @@
 defmodule ElixirSplitwiseWeb.Router do
+  alias ElixirSplitwiseWeb.FriendshipController
   use ElixirSplitwiseWeb, :router
 
   import ElixirSplitwiseWeb.UserAuth
@@ -27,12 +28,14 @@ defmodule ElixirSplitwiseWeb.Router do
 
     get "/add_friend", FriendshipController, :new
     post "/add_friend", FriendshipController, :create
+
   end
 
   scope "/", ElixirSplitwiseWeb.Live do
     pipe_through [:browser, :require_authenticated_user]
     live_session(:default) do
       live "/dashboard", Dashboard.DashboardLive
+      live "/friends/:id", FriendshipLive
     end
   end
 

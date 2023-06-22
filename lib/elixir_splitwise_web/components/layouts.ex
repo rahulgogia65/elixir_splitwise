@@ -5,6 +5,7 @@ defmodule ElixirSplitwiseWeb.Layouts do
   embed_templates "layouts/*"
 
   def friends_list(user) do
-    Friendship.get_friend_list_for(user.id)
+    friends_id_list = Friendship.get_friends_id_list_for(user.id)
+    Friendship.get_friend_names(friends_id_list) |> Enum.reject(&is_nil/1)
   end
 end

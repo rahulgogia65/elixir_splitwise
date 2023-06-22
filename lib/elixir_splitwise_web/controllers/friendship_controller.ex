@@ -11,4 +11,8 @@ defmodule ElixirSplitwiseWeb.FriendshipController do
     Accounts.add_friend(email, current_user)
     redirect(conn, to: "/")
   end
+
+  def show(conn, params) do
+    
+  end
 end

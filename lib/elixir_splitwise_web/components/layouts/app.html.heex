@@ -30,18 +30,15 @@
         <span class="cursor-pointer" phx-click={show_modal("add_friends")}>+Add</span>
       </div>
       <div class="mt-1">
-        <%= friends_list(@current_user) %>
+        <%= for friend <- friends_list(@current_user) do %>
+          <p><%= friend %></p>
+        <% end %>
       </div>
     </div>
   </div>
 
-  <div class="w-full h-full  shadow-2xl">
-    <div class="float-right p-5">
-      <.button_link href={~p"/dashboard"} method="get" class="bg-orange-600">Add an Expense</.button_link>
-      <.button_link href={~p"/dashboard"} method="get" class="ml-2 bg-teal-400">Settle Up</.button_link>
-    </div>
-  </div>
-  <div class="mx-auto max-w-2xl">
+
+  <div class="w-full h-full">
     <.flash_group flash={@flash} />
     <%= @inner_content %>
   </div>
