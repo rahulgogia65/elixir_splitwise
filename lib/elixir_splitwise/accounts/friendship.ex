@@ -5,8 +5,8 @@ defmodule ElixirSplitwise.Accounts.Friendship do
 
   alias ElixirSplitwise.Repo
   alias ElixirSplitwise.Accounts.{User, Friendship}
-  schema "friendships" do
 
+  schema "friendships" do
     field :user1_id, :id
     field :user2_id, :id
 
@@ -60,11 +60,11 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     user1_id = get_change(changeset, :user1_id)
     user2_id = get_change(changeset, :user2_id)
 
-    query = from f in Friendship,
-      where: (
-        (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
-        (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
-      )
+    query =
+      from f in Friendship,
+        where:
+          (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
+            (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
 
     if Repo.exists?(query) do
       changeset
@@ -75,24 +75,26 @@ defmodule ElixirSplitwise.Accounts.Friendship do
   end
 
   def get_friends_id_list_for(user_id) do
-    query = from f in Friendship,
-    where: f.user1_id == ^user_id or f.user2_id == ^user_id,
-    select: {f.user1_id, f.user2_id}
+    query =
+      from f in Friendship,
+        where: f.user1_id == ^user_id or f.user2_id == ^user_id,
+        select: {f.id, f.user1_id, f.user2_id}
 
-    friend_ids = Repo.all(query)
-    |> Enum.flat_map(fn {user1_id, user2_id} ->
+    Repo.all(query)
+    |> Enum.flat_map(fn {id, user1_id, user2_id} ->
       case user1_id do
-        ^user_id -> [user2_id]
-        _ -> [user1_id]
+        ^user_id -> [{id, user2_id}]
+        _ -> [{id, user1_id}]
       end
     end)
     |> Enum.uniq()
   end
 
   def get_friend_names(friend_ids) do
-    query = from u in User,
-      where: u.id in ^friend_ids,
-      select: u.name
+    query =
+      from u in User,
+        where: u.id in ^friend_ids,
+        select: u.name
 
     Repo.all(query)
   end
@@ -109,5 +111,30 @@ defmodule ElixirSplitwise.Accounts.Friendship do
 
     friend = Repo.get(User, friend_id)
     friend.name
+  end
+
+  def is_user_in_friendship?(user_id, friendship_id) do
+    friendship = Repo.get(Friendship, friendship_id)
+
+    case Repo.get(Friendship, friendship_id) do
+      %Friendship{user1_id: user1_id, user2_id: user2_id} ->
+        user_id in [user1_id, user2_id]
+      _ ->
+        false
+    end
+  end
+
+  def get_friends_list(user_id) do
+    query =
+      from f in Friendship,
+        join: u1 in User, on: f.user1_id == u1.id,
+        join: u2 in User, on: f.user2_id == u2.id,
+        where: ^user_id in [f.user1_id, f.user2_id],
+        select: {f.id, ^user_id == f.user1_id, u1.name, u2.name}
+
+    Repo.all(query)
+    |> Enum.map(fn {id, is_user1, name1, name2} ->
+      {(if is_user1, do: name2, else: name1), id}
+    end)
   end
 end

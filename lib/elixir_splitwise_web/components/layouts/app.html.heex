@@ -30,8 +30,10 @@
         <span class="cursor-pointer" phx-click={show_modal("add_friends")}>+Add</span>
       </div>
       <div class="mt-1">
-        <%= for friend <- friends_list(@current_user) do %>
-          <p><%= friend %></p>
+        <%= for {friend_name, friendship_id} <- friends_list(@current_user) do %>
+          <div>
+            <a href={~p"/friends/#{friendship_id}"}> <%= friend_name %></a>
+          </div>
         <% end %>
       </div>
     </div>
