@@ -23,10 +23,9 @@ defmodule ElixirSplitwiseWeb.Router do
     get "/", PageController, :home
   end
 
-  scope "/", ElixirSplitwiseWeb do
-    pipe_through [:browser, :require_authenticated_user, :disable_app_layout]
+  scope "/" do
+    pipe_through [:browser, :require_authenticated_user]
 
-    get "/add_friend", FriendshipController, :new
     post "/add_friend", FriendshipController, :create
 
   end

@@ -1,7 +1,6 @@
 defmodule ElixirSplitwise.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias ElixirSplitwise.Repo
 
   schema "users" do
     field :name, :string
@@ -9,6 +8,9 @@ defmodule ElixirSplitwise.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+
+    has_many :sent_friendships, ElixirSplitwise.Accounts.Friendship, foreign_key: :user1_id
+    has_many :received_friendships, ElixirSplitwise.Accounts.Friendship, foreign_key: :user2_id
 
     timestamps()
   end
@@ -162,7 +164,7 @@ defmodule ElixirSplitwise.Accounts.User do
     end
   end
 
-  def friends(user) do
+  def friends(_user) do
 
   end
 end

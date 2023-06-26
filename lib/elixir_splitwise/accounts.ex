@@ -4,7 +4,11 @@ defmodule ElixirSplitwise.Accounts do
   """
 
   import Ecto.Query, warn: false
-  use Phoenix.VerifiedRoutes, router: ElixirSplitwiseWeb.Router, endpoint: ElixirSplitwiseWeb.Endpoint
+
+  use Phoenix.VerifiedRoutes,
+    router: ElixirSplitwiseWeb.Router,
+    endpoint: ElixirSplitwiseWeb.Endpoint
+
   alias ElixirSplitwise.Repo
 
   alias ElixirSplitwise.Accounts.{User, UserToken, UserNotifier, Friendship}
@@ -353,8 +357,10 @@ defmodule ElixirSplitwise.Accounts do
   end
 
   def add_friend(email, current_user) do
-    register_friend(email)
-    |> create_friendship(current_user)
+    Repo.transaction(fn ->
+      register_friend(email)
+      |> create_friendship(current_user)
+    end)
   end
 
   def register_friend(email) do
@@ -365,22 +371,34 @@ defmodule ElixirSplitwise.Accounts do
         |> User.friend_registration_changeset(%{"email" => email})
         |> Repo.insert()
         |> send_invitation_email()
-      user -> {:ok, user}
+
+      user ->
+        {:ok, user}
     end
   end
 
   # TODO: def create_friendship({:error, _})
   def create_friendship({:ok, user}, current_user) do
+    IO.inspect user, label: "......................user"
+    IO.inspect current_user, label: "......................current_user"
+    IO.inspect %Friendship{}, label: "......................friendship"
     %Friendship{}
-    |> Friendship.changeset(%{"user1_id" => current_user.id, "user2_id" => user.id})
+    |> Friendship.changeset()
+    |> Ecto.Changeset.put_assoc(:user1, current_user)
+    |> Ecto.Changeset.put_assoc(:user2, user)
     |> Repo.insert()
+
+    # |> Friendship.validate_user_existence()
+    # |> Friendship.validate_different_users()
+    # |> Friendship.valdate_unique_friendship()
+    # |> Repo.insert()
   end
 
   def send_invitation_email({:ok, user}) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "register")
 
     Repo.insert!(user_token)
-    UserNotifier.deliver_new_registration_email(user, url( ~p"/users/register/#{encoded_token}"))
+    UserNotifier.deliver_new_registration_email(user, url(~p"/users/register/#{encoded_token}"))
 
     {:ok, user}
   end

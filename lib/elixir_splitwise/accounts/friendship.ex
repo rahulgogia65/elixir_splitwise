@@ -7,22 +7,19 @@ defmodule ElixirSplitwise.Accounts.Friendship do
   alias ElixirSplitwise.Accounts.{User, Friendship}
 
   schema "friendships" do
-    field :user1_id, :id
-    field :user2_id, :id
+    belongs_to(:user1, User, foreign_key: :user1_id)
+    belongs_to(:user2, User, foreign_key: :user2_id)
 
     timestamps()
   end
 
   @doc false
-  def changeset(friendship, attrs) do
+  def changeset(friendship, attrs \\ %{}) do
     friendship
-    |> cast(attrs, [:user1_id, :user2_id])
-    |> validate_user_existence()
-    |> validate_different_users()
-    |> valdate_unique_friendship()
+    |> cast(attrs, [])
   end
 
-  defp validate_user_existence(changeset) do
+  def validate_user_existence(changeset) do
     user1_id = get_change(changeset, :user1_id)
     user2_id = get_change(changeset, :user2_id)
 
@@ -44,7 +41,7 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     Repo.get(User, id) != nil
   end
 
-  defp validate_different_users(changeset) do
+  def validate_different_users(changeset) do
     user1_id = get_change(changeset, :user1_id)
     user2_id = get_change(changeset, :user2_id)
 
@@ -56,7 +53,7 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     end
   end
 
-  defp valdate_unique_friendship(changeset) do
+  def valdate_unique_friendship(changeset) do
     user1_id = get_change(changeset, :user1_id)
     user2_id = get_change(changeset, :user2_id)
 
@@ -114,8 +111,6 @@ defmodule ElixirSplitwise.Accounts.Friendship do
   end
 
   def is_user_in_friendship?(user_id, friendship_id) do
-    friendship = Repo.get(Friendship, friendship_id)
-
     case Repo.get(Friendship, friendship_id) do
       %Friendship{user1_id: user1_id, user2_id: user2_id} ->
         user_id in [user1_id, user2_id]
@@ -125,6 +120,7 @@ defmodule ElixirSplitwise.Accounts.Friendship do
   end
 
   def get_friends_list(user_id) do
+    user = Repo.get(User, user_id) |> Repo.preload([:sent_friendships, :received_friendships])
     query =
       from f in Friendship,
         join: u1 in User, on: f.user1_id == u1.id,
