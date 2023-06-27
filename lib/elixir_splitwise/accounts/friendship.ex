@@ -57,25 +57,22 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     user1 = get_change(changeset, :user1)
     user2 = get_change(changeset, :user2)
 
-    user1
+    sent_friendships_to_user2_exists = user1.data
     |> Ecto.assoc(:sent_friendships)
-    |> where([sf], sf.user2_id == ^user2.id)
-    |> Repo.all()
-    |> IO.inspect()
+    |> where([sf], sf.user2_id == ^user2.data.id)
+    |> Repo.exists?()
 
+    recieved_friendships_from_user2_exists = user1.data
+    |> Ecto.assoc(:received_friendships)
+    |> where([rf], rf.user1_id == ^user2.data.id)
+    |> Repo.exists?()
 
-    # query =
-    #   from f in Friendship,
-    #     where:
-    #       (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
-    #         (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
-
-    # if Repo.exists?(query) do
-    #   changeset
-    #   |> add_error(:id, "Friendship Alreay exists")
-    # else
-    #   changeset
-    # end
+    unless sent_friendships_to_user2_exists or recieved_friendships_from_user2_exists do
+      changeset
+    else
+      changeset
+      |> add_error(:id, "Friendship Alreay exists")
+    end
   end
 
   def get_friends_id_list_for(user_id) do

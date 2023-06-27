@@ -383,13 +383,9 @@ defmodule ElixirSplitwise.Accounts do
     |> Friendship.changeset()
     |> Ecto.Changeset.put_assoc(:user1, current_user)
     |> Ecto.Changeset.put_assoc(:user2, user)
-    # |> Repo.insert()
-    # |> Friendship.validate_different_users()
+    |> Friendship.validate_different_users()
     |> Friendship.valdate_unique_friendship()
     |> Repo.insert()
-
-    # |> Friendship.validate_different_users()
-    # |> Repo.insert()
   end
 
   def send_invitation_email({:ok, user}) do
