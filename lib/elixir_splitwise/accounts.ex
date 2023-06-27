@@ -379,18 +379,16 @@ defmodule ElixirSplitwise.Accounts do
 
   # TODO: def create_friendship({:error, _})
   def create_friendship({:ok, user}, current_user) do
-    IO.inspect user, label: "......................user"
-    IO.inspect current_user, label: "......................current_user"
-    IO.inspect %Friendship{}, label: "......................friendship"
-    %Friendship{}
+    friendship = %Friendship{}
     |> Friendship.changeset()
     |> Ecto.Changeset.put_assoc(:user1, current_user)
     |> Ecto.Changeset.put_assoc(:user2, user)
+    # |> Repo.insert()
+    # |> Friendship.validate_different_users()
+    |> Friendship.valdate_unique_friendship()
     |> Repo.insert()
 
-    # |> Friendship.validate_user_existence()
     # |> Friendship.validate_different_users()
-    # |> Friendship.valdate_unique_friendship()
     # |> Repo.insert()
   end
 

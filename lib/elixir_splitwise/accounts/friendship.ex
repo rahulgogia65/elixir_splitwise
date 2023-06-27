@@ -42,33 +42,40 @@ defmodule ElixirSplitwise.Accounts.Friendship do
   end
 
   def validate_different_users(changeset) do
-    user1_id = get_change(changeset, :user1_id)
-    user2_id = get_change(changeset, :user2_id)
+    user1 = get_change(changeset, :user1)
+    user2 = get_change(changeset, :user2)
 
-    if user1_id != user2_id do
+    if user1 != user2 do
       changeset
     else
       changeset
-      |> add_error(:user2_id, "You cannot add yourself as a friend")
+      |> add_error(:user2, "You cannot add yourself as a friend")
     end
   end
 
   def valdate_unique_friendship(changeset) do
-    user1_id = get_change(changeset, :user1_id)
-    user2_id = get_change(changeset, :user2_id)
+    user1 = get_change(changeset, :user1)
+    user2 = get_change(changeset, :user2)
 
-    query =
-      from f in Friendship,
-        where:
-          (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
-            (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
+    user1
+    |> Ecto.assoc(:sent_friendships)
+    |> where([sf], sf.user2_id == ^user2.id)
+    |> Repo.all()
+    |> IO.inspect()
 
-    if Repo.exists?(query) do
-      changeset
-      |> add_error(:id, "Friendship Alreay exists")
-    else
-      changeset
-    end
+
+    # query =
+    #   from f in Friendship,
+    #     where:
+    #       (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
+    #         (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
+
+    # if Repo.exists?(query) do
+    #   changeset
+    #   |> add_error(:id, "Friendship Alreay exists")
+    # else
+    #   changeset
+    # end
   end
 
   def get_friends_id_list_for(user_id) do
