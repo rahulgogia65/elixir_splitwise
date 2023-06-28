@@ -379,7 +379,7 @@ defmodule ElixirSplitwise.Accounts do
 
   # TODO: def create_friendship({:error, _})
   def create_friendship({:ok, user}, current_user) do
-    friendship = %Friendship{}
+    %Friendship{}
     |> Friendship.changeset()
     |> Ecto.Changeset.put_assoc(:user1, current_user)
     |> Ecto.Changeset.put_assoc(:user2, user)

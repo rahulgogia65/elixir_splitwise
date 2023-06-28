@@ -3,9 +3,10 @@ defmodule ElixirSplitwiseWeb.Live.FriendshipLive do
   alias ElixirSplitwise.Accounts.Friendship
 
   def mount(params, _session, socket) do
-    current_user_id = socket.assigns.current_user.id
+    current_user = socket.assigns.current_user
     friendship_id = params["id"]
-    if Friendship.is_user_in_friendship?(current_user_id, friendship_id) do
+
+    if Friendship.is_user_in_friendship?(current_user, friendship_id) do
       {:ok, assign(socket, friendship_id: friendship_id)}
     else
       {:ok, socket |> put_flash(:error, "Friend not found") |> redirect(to: "/dashboard")}

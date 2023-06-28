@@ -5,7 +5,7 @@ defmodule ElixirSplitwiseWeb.Layouts do
   embed_templates "layouts/*"
 
   def friends_list(user) do
-    Friendship.get_friends_list(user.id)
+    Friendship.get_friends_list(user)
     # [{"Amit", "/friends/15"}]
   end
 end
