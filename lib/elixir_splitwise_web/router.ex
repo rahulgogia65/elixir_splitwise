@@ -1,4 +1,5 @@
 defmodule ElixirSplitwiseWeb.Router do
+  alias ElixirSplitwiseWeb.FriendshipController
   use ElixirSplitwiseWeb, :router
 
   import ElixirSplitwiseWeb.UserAuth
@@ -18,11 +19,23 @@ defmodule ElixirSplitwiseWeb.Router do
   end
 
   scope "/", ElixirSplitwiseWeb do
+    pipe_through :browser
+    get "/", PageController, :home
+  end
+
+  scope "/" do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/", PageController, :home
-    get "/add_friend", FriendshipController, :new
     post "/add_friend", FriendshipController, :create
+
+  end
+
+  scope "/", ElixirSplitwiseWeb.Live do
+    pipe_through [:browser, :require_authenticated_user]
+    live_session(:default) do
+      live "/dashboard", Dashboard.DashboardLive
+      live "/friends/:id", FriendshipLive
+    end
   end
 
   # Other scopes may use custom stacks.
@@ -50,7 +63,7 @@ defmodule ElixirSplitwiseWeb.Router do
   ## Authentication routes
 
   scope "/", ElixirSplitwiseWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :disable_app_layout]
 
     get "/users/register", UserRegistrationController, :new
     post "/users/register", UserRegistrationController, :create
@@ -80,5 +93,10 @@ defmodule ElixirSplitwiseWeb.Router do
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
+  def disable_app_layout(conn, _opts) do
+    conn
+    |> put_layout(false)
   end
 end

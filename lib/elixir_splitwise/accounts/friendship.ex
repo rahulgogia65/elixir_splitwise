@@ -5,73 +5,93 @@ defmodule ElixirSplitwise.Accounts.Friendship do
 
   alias ElixirSplitwise.Repo
   alias ElixirSplitwise.Accounts.{User, Friendship}
-  schema "friendships" do
 
-    field :user1_id, :id
-    field :user2_id, :id
+  schema "friendships" do
+    belongs_to(:user1, User, foreign_key: :user1_id)
+    belongs_to(:user2, User, foreign_key: :user2_id)
 
     timestamps()
   end
 
   @doc false
-  def changeset(friendship, attrs) do
+  def changeset(friendship, attrs \\ %{}) do
     friendship
-    |> cast(attrs, [:user1_id, :user2_id])
-    |> validate_user_existence()
-    |> validate_different_users()
-    |> valdate_unique_friendship()
+    |> cast(attrs, [])
   end
 
-  defp validate_user_existence(changeset) do
-    user1_id = get_change(changeset, :user1_id)
-    user2_id = get_change(changeset, :user2_id)
+  def validate_different_users(changeset) do
+    user1 = get_change(changeset, :user1)
+    user2 = get_change(changeset, :user2)
 
-    changeset
-    |> add_user_existence_error(:user1_id, user1_id)
-    |> add_user_existence_error(:user2_id, user2_id)
-  end
-
-  defp add_user_existence_error(changeset, field, user_id) do
-    if !check_user_existence(user_id) do
-      changeset
-      |> add_error(field, "User with ID #{user_id} does not exist")
-    else
-      changeset
-    end
-  end
-
-  defp check_user_existence(id) do
-    Repo.get(User, id) != nil
-  end
-
-  defp validate_different_users(changeset) do
-    user1_id = get_change(changeset, :user1_id)
-    user2_id = get_change(changeset, :user2_id)
-
-    if user1_id != user2_id do
+    if user1 != user2 do
       changeset
     else
       changeset
-      |> add_error(:user2_id, "You cannot add yourself as a friend")
+      |> add_error(:user2, "You cannot add yourself as a friend")
     end
   end
 
-  defp valdate_unique_friendship(changeset) do
-    user1_id = get_change(changeset, :user1_id)
-    user2_id = get_change(changeset, :user2_id)
+  def validate_unique_friendship(changeset) do
+    user1 = get_change(changeset, :user1)
+    user2 = get_change(changeset, :user2)
 
-    query = from f in Friendship,
-      where: (
-        (f.user1_id == ^user1_id and f.user2_id == ^user2_id) or
-        (f.user2_id == ^user1_id and f.user1_id == ^user2_id)
-      )
+    sent_friendships_to_user2_exists =
+      user1.data
+      |> Ecto.assoc(:sent_friendships)
+      |> where([sf], sf.user2_id == ^user2.data.id)
+      |> Repo.exists?()
 
-    if Repo.exists?(query) do
+    recieved_friendships_from_user2_exists =
+      user1.data
+      |> Ecto.assoc(:received_friendships)
+      |> where([rf], rf.user1_id == ^user2.data.id)
+      |> Repo.exists?()
+
+    unless sent_friendships_to_user2_exists or recieved_friendships_from_user2_exists do
+      changeset
+    else
       changeset
       |> add_error(:id, "Friendship Alreay exists")
-    else
-      changeset
     end
   end
 
+  def get_friend_name(current_user, id) do
+    friendship = Repo.get(Friendship, id) |> Repo.preload([:user1, :user2])
+
+    case friendship do
+      %Friendship{user1: ^current_user, user2: user2} ->
+        user2.name
+
+      %Friendship{user1: user1} ->
+        user1.name
+    end
+  end
+
+  def is_user_in_friendship?(current_user, friendship_id) do
+    case Repo.get(Friendship, friendship_id) |> Repo.preload([:user1, :user2]) do
+      %Friendship{user1: ^current_user} -> true
+      %Friendship{user2: ^current_user} -> true
+      _ -> false
+    end
+  end
+
+  def get_friends_list(user) do
+    user = user |> Repo.preload(sent_friendships: :user2, received_friendships: :user1)
+
+    sent_friendships =
+      user
+      |> Ecto.assoc(:sent_friendships)
+      |> Ecto.Query.join(:inner, [f], u in assoc(f, :user2))
+      |> Ecto.Query.select([f, u], {u.name, f.id})
+      |> Repo.all()
+
+    received_friendships =
+      user
+      |> Ecto.assoc(:received_friendships)
+      |> Ecto.Query.join(:inner, [f], u in assoc(f, :user1))
+      |> Ecto.Query.select([f, u], {u.name, f.id})
+      |> Repo.all()
+
+    sent_friendships ++ received_friendships
+  end
 end

@@ -224,6 +224,29 @@ defmodule ElixirSplitwiseWeb.CoreComponents do
     """
   end
 
+
+
+  attr :href, :string, required: true
+  attr :method, :string, required: true
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+  def button_link(assigns) do
+    ~H"""
+    <.link
+      href={@href}
+      method={@method}
+      class={[
+        "phx-submit-loading:opacity-75 rounded-lg py-2 px-3",
+        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        @class
+      ]}
+    >
+    <%= render_slot(@inner_block) %>
+    </.link>
+    """
+  end
+
   @doc """
   Renders an input with label and error messages.
 

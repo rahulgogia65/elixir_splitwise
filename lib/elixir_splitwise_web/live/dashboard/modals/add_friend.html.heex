@@ -1,0 +1,14 @@
+<.modal id="add_friends">
+    <div>
+      <div>
+        Invite Friends
+      </div>
+      <.simple_form :let={f} for={@form} action={~p"/add_friend"}>
+        <.input field={f[:email]} type="email" label="Email" required />
+    
+        <:actions>
+          <.button phx-disable-with="Sending Invite..." class="w-full">Add friend</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+  </.modal>

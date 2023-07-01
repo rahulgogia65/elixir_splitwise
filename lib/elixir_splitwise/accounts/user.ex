@@ -9,6 +9,9 @@ defmodule ElixirSplitwise.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
+    has_many :sent_friendships, ElixirSplitwise.Accounts.Friendship, foreign_key: :user1_id
+    has_many :received_friendships, ElixirSplitwise.Accounts.Friendship, foreign_key: :user2_id
+
     timestamps()
   end
 
@@ -37,7 +40,7 @@ defmodule ElixirSplitwise.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :name])
     |> validate_email(opts)
     |> validate_password(opts)
   end
