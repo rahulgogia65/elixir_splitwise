@@ -357,10 +357,8 @@ defmodule ElixirSplitwise.Accounts do
   end
 
   def add_friend(email, current_user) do
-    Repo.transaction(fn ->
-      register_friend(email)
-      |> create_friendship(current_user)
-    end)
+    register_friend(email)
+    |> create_friendship(current_user)
   end
 
   def register_friend(email) do
@@ -384,7 +382,7 @@ defmodule ElixirSplitwise.Accounts do
     |> Ecto.Changeset.put_assoc(:user1, current_user)
     |> Ecto.Changeset.put_assoc(:user2, user)
     |> Friendship.validate_different_users()
-    |> Friendship.valdate_unique_friendship()
+    |> Friendship.validate_unique_friendship()
     |> Repo.insert()
   end
 

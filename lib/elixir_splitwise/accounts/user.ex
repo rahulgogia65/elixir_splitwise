@@ -163,8 +163,4 @@ defmodule ElixirSplitwise.Accounts.User do
       add_error(changeset, :current_password, "is not valid")
     end
   end
-
-  def friends(_user) do
-
-  end
 end
