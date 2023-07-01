@@ -35,6 +35,13 @@ defmodule ElixirSplitwiseWeb.Router do
     live_session(:default) do
       live "/dashboard", Dashboard.DashboardLive
       live "/friends/:id", FriendshipLive
+      
+      live "/expenses", ExpenseLive.Index, :index
+      live "/expenses/new", ExpenseLive.Index, :new
+      live "/expenses/:id/edit", ExpenseLive.Index, :edit
+
+      live "/expenses/:id", ExpenseLive.Show, :show
+      live "/expenses/:id/show/edit", ExpenseLive.Show, :edit
     end
   end
 
