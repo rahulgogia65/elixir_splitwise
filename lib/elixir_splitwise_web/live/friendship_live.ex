@@ -1,4 +1,4 @@
-defmodule ElixirSplitwiseWeb.Live.FriendshipLive do
+defmodule ElixirSplitwiseWeb.FriendshipLive do
   use ElixirSplitwiseWeb, :live_view
   alias ElixirSplitwise.Accounts.Friendship
 

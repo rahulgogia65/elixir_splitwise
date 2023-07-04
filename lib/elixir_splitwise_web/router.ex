@@ -30,14 +30,14 @@ defmodule ElixirSplitwiseWeb.Router do
 
   end
 
-  scope "/", ElixirSplitwiseWeb.Live do
+  scope "/", ElixirSplitwiseWeb do
     pipe_through [:browser, :require_authenticated_user]
     live_session(:default) do
       live "/dashboard", Dashboard.DashboardLive
       live "/friends/:id", FriendshipLive
-      
+
       live "/expenses", ExpenseLive.Index, :index
-      live "/expenses/new", ExpenseLive.Index, :new
+      live "/expenses/new", ExpenseLive.New, :new
       live "/expenses/:id/edit", ExpenseLive.Index, :edit
 
       live "/expenses/:id", ExpenseLive.Show, :show

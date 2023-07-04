@@ -1,4 +1,4 @@
-defmodule ElixirSplitwiseWeb.Live.Dashboard.Modals.AddFriend do
+defmodule ElixirSplitwiseWeb.Dashboard.Modals.AddFriend do
   use ElixirSplitwiseWeb, :live_view
 
   def mount(_params, _session, socket) do

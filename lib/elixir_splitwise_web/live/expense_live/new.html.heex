@@ -1,0 +1,10 @@
+<.modal :if={@live_action in [:new, :edit]} id="expense-modal" show on_cancel>
+    <.live_component
+      module={ElixirSplitwiseWeb.ExpenseLive.FormComponent}
+      id={@expense.id || :new}
+      title={@page_title}
+      action={@live_action}
+      expense={@expense}
+      patch={~p"/expenses"}
+    />
+</.modal>

@@ -21,7 +21,7 @@ defmodule ElixirSplitwise.Expenses.Expense do
   @doc false
   def changeset(expense, attrs) do
     expense
-    |> cast(attrs, [:id, :shared_with_friend, :shared_with_group, :description, :currency, :amount, :created_by, :paid_by, :split_option, :notes])
-    |> validate_required([:id, :shared_with_friend, :shared_with_group, :description, :currency, :amount, :created_by, :paid_by, :split_option, :notes])
+    |> cast(attrs, [:shared_with_friend_id, :description, :currency, :amount, :created_by_id, :paid_by, :split_option, :notes])
+    |> validate_required([:shared_with_friend_id, :description, :currency, :amount, :created_by_id, :paid_by, :split_option, :notes])
   end
 end

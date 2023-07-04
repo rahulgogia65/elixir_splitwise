@@ -19,13 +19,9 @@ defmodule ElixirSplitwiseWeb.ExpenseLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:id]} type="number" label="Id" />
-        <.input field={@form[:shared_with_friend]} type="number" label="Shared with friend" />
-        <.input field={@form[:shared_with_group]} type="number" label="Shared with group" />
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:currency]} type="text" label="Currency" />
         <.input field={@form[:amount]} type="number" label="Amount" step="any" />
-        <.input field={@form[:created_by]} type="number" label="Created by" />
         <.input field={@form[:paid_by]} type="text" label="Paid by" />
         <.input field={@form[:split_option]} type="text" label="Split option" />
         <.input field={@form[:notes]} type="text" label="Notes" />

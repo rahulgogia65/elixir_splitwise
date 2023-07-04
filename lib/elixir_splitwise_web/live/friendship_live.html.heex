@@ -3,7 +3,10 @@
     <%= friend_name(@current_user, @friendship_id) %>
   </div>
   <div class="float-right p-7">
-    <.button_link href={~p"/dashboard"} method="get" class="bg-orange-600">Add an Expense</.button_link>
+    <.link patch={~p"/expenses/new"}>
+      <.button>New Expense</.button>
+    </.link>
+  
     <.button_link href={~p"/dashboard"} method="get" class="ml-2 bg-teal-400">Settle Up</.button_link>
   </div>
 </div>
