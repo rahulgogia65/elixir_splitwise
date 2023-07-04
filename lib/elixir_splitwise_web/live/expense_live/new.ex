@@ -6,12 +6,11 @@ defmodule ElixirSplitwiseWeb.ExpenseLive.New do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.inspect socket, label: "......................Socket"
     {:ok, socket}
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
+  def handle_params(params, url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 

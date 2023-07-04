@@ -2,6 +2,9 @@ defmodule ElixirSplitwiseWeb.FriendshipLive do
   use ElixirSplitwiseWeb, :live_view
   alias ElixirSplitwise.Accounts.Friendship
 
+  alias ElixirSplitwise.Expenses.Expense
+
+  @impl true
   def mount(params, _session, socket) do
     current_user = socket.assigns.current_user
     friendship_id = params["id"]
@@ -15,5 +18,21 @@ defmodule ElixirSplitwiseWeb.FriendshipLive do
 
   def friend_name(current_user, friendship_id) do
     Friendship.get_friend_name(current_user, friendship_id)
+  end
+
+  @impl true
+  def handle_params(params, url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params, url)}
+  end
+
+  defp apply_action(socket, :add_expense, _params, url) do
+    socket
+    |> assign(:page_title, "New Expense")
+    |> assign(:expense, %Expense{})
+    |> assign(:url, URI.parse(url))
+  end
+
+  defp apply_action(socket, :nil, _params, _url) do
+    socket
   end
 end

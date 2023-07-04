@@ -9,4 +9,14 @@
   
     <.button_link href={~p"/dashboard"} method="get" class="ml-2 bg-teal-400">Settle Up</.button_link>
   </div>
+  <.modal :if={@live_action in [:add_expense]} id="expense-modal" show on_cancel={JS.patch(@url.path)}>
+    <.live_component
+      module={ElixirSplitwiseWeb.ExpenseLive.FormComponent}
+      id={@expense.id || :new}
+      title={@page_title}
+      action={@live_action}
+      expense={@expense}
+      patch={~p"/expenses"}
+    />
+  </.modal>
 </div>
