@@ -19,6 +19,7 @@ defmodule ElixirSplitwiseWeb.ExpenseLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <%= @name %>
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:currency]} type="text" label="Currency" />
         <.input field={@form[:amount]} type="number" label="Amount" step="any" />
