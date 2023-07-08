@@ -1,4 +1,4 @@
-defmodule ElixirSplitwiseWeb.ExpenseLive.FormComponent do
+defmodule ElixirSplitwiseWeb.ExpenseLive.Components.FormComponent do
   use ElixirSplitwiseWeb, :live_component
 
   alias ElixirSplitwise.Expenses
@@ -7,9 +7,8 @@ defmodule ElixirSplitwiseWeb.ExpenseLive.FormComponent do
   def render(assigns) do
     ~H"""
     <div>
-      <.header>
+      <.header class="-mb-8">
         <%= @title %>
-        <:subtitle>Use this form to manage expense records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -19,9 +18,8 @@ defmodule ElixirSplitwiseWeb.ExpenseLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <%= @name %>
+        <span class=""> With you and <%= @name %> </span>
         <.input field={@form[:description]} type="text" label="Description" />
-        <.input field={@form[:currency]} type="text" label="Currency" />
         <.input field={@form[:amount]} type="number" label="Amount" step="any" />
         <.input field={@form[:paid_by]} type="text" label="Paid by" />
         <.input field={@form[:split_option]} type="text" label="Split option" />

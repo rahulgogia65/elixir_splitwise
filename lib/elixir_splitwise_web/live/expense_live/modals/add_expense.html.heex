@@ -1,0 +1,10 @@
+<.modal id="expense-modal">
+  <.live_component
+    module={ElixirSplitwiseWeb.ExpenseLive.FormComponent}
+    id={@expense.id || :new}
+    title={@page_title}
+    action={@live_action}
+    expense={@expense}
+    patch={~p"/expenses"}
+  />
+</.modal>

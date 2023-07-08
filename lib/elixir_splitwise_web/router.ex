@@ -33,7 +33,7 @@ defmodule ElixirSplitwiseWeb.Router do
   scope "/", ElixirSplitwiseWeb do
     pipe_through [:browser, :require_authenticated_user]
     live_session(:default) do
-      live "/dashboard", Dashboard.DashboardLive
+      live "/dashboard", DashboardLive.Dashboard
       live "/friends/:id", FriendshipLive
 
       live "/expenses", ExpenseLive.Index, :index

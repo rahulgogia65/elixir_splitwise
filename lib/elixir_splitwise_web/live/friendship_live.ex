@@ -27,18 +27,30 @@ defmodule ElixirSplitwiseWeb.FriendshipLive do
   end
 
   @impl true
-  def handle_params(params, url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params, url)}
+  def handle_params(_params, _url, socket) do
+    socket =
+      socket
+      |> assign(:page_title, "Add an Expense")
+      |> assign(:expense, %Expense{})
+
+      IO.inspect(socket, label: "....................Socket")
+    {:noreply, socket}
   end
 
-  defp apply_action(socket, :add_expense, _params, _url) do
-    socket
-    |> assign(:page_title, "New Expense")
-    |> assign(:expense, %Expense{})
-  end
+  # @impl true
+  # def handle_event("add_expense", unsigned_params, socket) do
+  #   IO.inspect(unsigned_params, label: "..........................Parmas unsigned")
+  #   {:ok, socket}
+  # end
 
-  defp apply_action(socket, nil, _params, url) do
-    socket
-    |> assign(:url, URI.parse(url))
-  end
+  # defp apply_action(socket, :add_expense, _params, _url) do
+  #   socket
+  #   |> assign(:page_title, "Add an Expense")
+  #   |> assign(:expense, %Expense{})
+  # end
+
+  # defp apply_action(socket, nil, _params, url) do
+  #   socket
+  #   |> assign(:url, URI.parse(url))
+  # end
 end

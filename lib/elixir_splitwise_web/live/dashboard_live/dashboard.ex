@@ -1,4 +1,4 @@
-defmodule ElixirSplitwiseWeb.Dashboard.DashboardLive do
+defmodule ElixirSplitwiseWeb.DashboardLive.Dashboard do
   use ElixirSplitwiseWeb, :live_view
 
   def mount(_params, _session, socket) do

@@ -15,7 +15,7 @@
   <div class="w-72 h-full">
     <div class="px-5 py-5">
       <div class="flex flex-col gap-y-2">
-        <.link href={~p"/dashboard"}>Dashboard</.link>
+        <.link href={~p"/dashboard"} class="text-teal-400 border-l-8 border-teal-400 pl-2">Dashboard</.link>
         <.link href={~p"/dashboard"}>All Expenses</.link>
       </div>
       <div class="flex mt-7 justify-between bg-slate-300 px-2 py-1">
@@ -45,5 +45,5 @@
     <%= @inner_content %>
   </div>
 
-  <%= live_render(@socket, ElixirSplitwiseWeb.Dashboard.Modals.AddFriend, id: "add_friend") %>
+  <%= live_render(@socket, ElixirSplitwiseWeb.DashboardLive.Modals.AddFriend, id: "add_friend") %>
 </main>
