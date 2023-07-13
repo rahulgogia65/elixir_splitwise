@@ -1,4 +1,5 @@
 defmodule ElixirSplitwiseWeb.Router do
+  alias ElixirSplitwiseWeb.ExpenseLive
   alias ElixirSplitwiseWeb.FriendshipController
   use ElixirSplitwiseWeb, :router
 
@@ -37,7 +38,7 @@ defmodule ElixirSplitwiseWeb.Router do
       live "/friends/:id", FriendshipLive
 
       live "/expenses", ExpenseLive.Index, :index
-      live "/expenses/new", FriendshipLive, :add_expense
+      live "/expenses/new", ExpenseLive.Index, :new
       live "/expenses/:id/edit", ExpenseLive.Index, :edit
 
       live "/expenses/:id", ExpenseLive.Show, :show

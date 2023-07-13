@@ -12,6 +12,8 @@ defmodule ElixirSplitwise.Accounts.User do
     has_many :sent_friendships, ElixirSplitwise.Accounts.Friendship, foreign_key: :user1_id
     has_many :received_friendships, ElixirSplitwise.Accounts.Friendship, foreign_key: :user2_id
 
+    has_many :expenses, ElixirSplitwise.Expenses.Expense, foreign_key: :created_by_id
+
     timestamps()
   end
 

@@ -5,10 +5,13 @@ defmodule ElixirSplitwise.Accounts.Friendship do
 
   alias ElixirSplitwise.Repo
   alias ElixirSplitwise.Accounts.{User, Friendship}
+  alias ElixirSplitwise.Expenses.Expense
 
   schema "friendships" do
     belongs_to(:user1, User, foreign_key: :user1_id)
     belongs_to(:user2, User, foreign_key: :user2_id)
+
+    has_many :expenses, Expense, foreign_key: :shared_with_friend_id
 
     timestamps()
   end
@@ -55,15 +58,15 @@ defmodule ElixirSplitwise.Accounts.Friendship do
     end
   end
 
-  def get_friend_name(current_user, id) do
+  def get_friend(current_user, id) do
     friendship = Repo.get(Friendship, id) |> Repo.preload([:user1, :user2])
 
     case friendship do
       %Friendship{user1: ^current_user, user2: user2} ->
-        user2.name
+        user2
 
       %Friendship{user1: user1} ->
-        user1.name
+        user1
     end
   end
 

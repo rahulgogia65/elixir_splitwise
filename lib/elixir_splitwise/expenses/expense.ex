@@ -2,6 +2,7 @@ defmodule ElixirSplitwise.Expenses.Expense do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias ElixirSplitwise.Accounts.Friendship
   alias ElixirSplitwise.Accounts.User
 
   schema "expenses" do
@@ -9,11 +10,11 @@ defmodule ElixirSplitwise.Expenses.Expense do
     field :currency, :string
     field :description, :string
     field :notes, :string
-    field :paid_by, :map
+    field :paid_by, :integer
     field :split_option, :string
 
-    belongs_to :created_by, User
-    belongs_to :shared_with_friend, User
+    belongs_to :created_by, User, foreign_key: :created_by_id
+    belongs_to :shared_with_friend, Friendship, foreign_key: :shared_with_friend_id
 
     timestamps()
   end
@@ -21,7 +22,7 @@ defmodule ElixirSplitwise.Expenses.Expense do
   @doc false
   def changeset(expense, attrs) do
     expense
-    |> cast(attrs, [:shared_with_friend_id, :description, :currency, :amount, :created_by_id, :paid_by, :split_option, :notes])
-    |> validate_required([:shared_with_friend_id, :description, :currency, :amount, :created_by_id, :paid_by, :split_option, :notes])
+    |> cast(attrs, [:description, :amount, :paid_by, :split_option, :notes])
+    |> validate_required([:description, :amount, :paid_by])
   end
 end

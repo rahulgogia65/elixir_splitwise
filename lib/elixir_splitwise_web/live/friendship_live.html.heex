@@ -1,11 +1,23 @@
 <div class="w-full h-full shadow-2xl justify-between flex">
   <div class="p-7">
+    <%= @friend.name %>
   </div>
   <div class="float-right p-7">
-    <.button phx-click="add_expense"> Add New Expense </.button>
-  
-    <.button_link href={~p"/dashboard"} method="get" class="ml-2 bg-teal-400">Settle Up</.button_link>
+    <.link patch={~p"/expenses/new"}> Add New Expense</.link>
+
+    <.link href={~p"/dashboard"} method="get">
+      <.button class="ml-2 bg-teal-400"> Settle Up </.button>
+    </.link>
   </div>
 
-  <%= live_render(IO.inspect(@socket, label: ".............Socket from render"), ElixirSplitwiseWeb.ExpenseLive.Modals.AddExpense, id: "add_expense", session: %{"page_title" => @page_title}) %>
+  <.modal id="add_expense">
+    <.live_component module={ElixirSplitwiseWeb.ExpenseLive.Components.FormComponent} id={@expense.id || :new}
+      title={@page_title} action={@live_action} expense={@expense} patch={@url.path} friend={@friend}
+      current_user={@current_user} friends_list={@friends_list} friendship_id={@friendship_id} split_option="equally" />
+  </.modal>
+
+  <.modal id="split_option">
+    Hi
+  </.modal>
+
 </div>

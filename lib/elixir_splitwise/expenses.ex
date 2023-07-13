@@ -49,8 +49,8 @@ defmodule ElixirSplitwise.Expenses do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_expense(attrs \\ %{}) do
-    %Expense{}
+  def create_friendship_expense(attrs \\ %{}) do
+    %Expense{shared_with_friend_id: attrs["shared_with_friend_id"], created_by_id: attrs["created_by_id"]}
     |> Expense.changeset(attrs)
     |> Repo.insert()
   end

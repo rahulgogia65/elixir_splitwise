@@ -3,13 +3,13 @@ defmodule ElixirSplitwise.Repo.Migrations.AllowNullHashedPasswordInUsers do
 
   def up do
     alter table(:users) do
-      modify :hashed_password, :string, null: true
+      modify(:hashed_password, :string, null: true)
     end
   end
 
   def down do
     alter table(:users) do
-      modify :hashed_password, :string, null: false
+      modify(:hashed_password, :string, null: false)
     end
   end
 end

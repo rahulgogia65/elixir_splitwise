@@ -7,10 +7,15 @@ defmodule ElixirSplitwiseWeb.FriendshipLive do
   @impl true
   def mount(params, _session, socket) do
     current_user = socket.assigns.current_user
-    friendship_id = params["id"]
+    friendship_id = String.to_integer(params["id"])
 
     if friendship_id && Friendship.is_user_in_friendship?(current_user, friendship_id) do
-      {:ok, assign(socket, friendship_id: friendship_id)}
+      {:ok,
+       assign(socket,
+         friendship_id: friendship_id,
+         friend: friend(current_user, friendship_id),
+         friends_list: Friendship.get_friends_list(current_user)
+       )}
     else
       case friendship_id do
         nil ->
@@ -22,19 +27,19 @@ defmodule ElixirSplitwiseWeb.FriendshipLive do
     end
   end
 
-  def friend_name(current_user, friendship_id) do
-    Friendship.get_friend_name(current_user, friendship_id)
-  end
-
   @impl true
-  def handle_params(_params, _url, socket) do
+  def handle_params(_params, url, socket) do
     socket =
       socket
       |> assign(:page_title, "Add an Expense")
       |> assign(:expense, %Expense{})
+      |> assign(:url, URI.parse(url))
 
-      IO.inspect(socket, label: "....................Socket")
     {:noreply, socket}
+  end
+
+  defp friend(current_user, friendship_id) do
+    Friendship.get_friend(current_user, friendship_id)
   end
 
   # @impl true

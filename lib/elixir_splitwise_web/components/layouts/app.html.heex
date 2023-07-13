@@ -6,7 +6,9 @@
         <span class="pr-5">
           <%= @current_user.name %>
         </span>
-        <.button_link href={~p"/users/log_out"} method="delete" class="bg-teal-700">Log Out</.button_link>
+        <.link href={~p"/users/log_out"} method="delete">
+          <.button class="bg-teal-700"> Log Out</.button>
+        </.link>
       </div>
       <% end %>
   </div>
@@ -32,9 +34,11 @@
       <div class="mt-1">
         <%= for {friend_name, friendship_id} <- friends_list(@current_user) do %>
           <div>
-            <a href={~p"/friends/#{friendship_id}"}> <%= friend_name %></a>
+            <a href={~p"/friends/#{friendship_id}"}>
+              <%= friend_name %>
+            </a>
           </div>
-        <% end %>
+          <% end %>
       </div>
     </div>
   </div>
@@ -45,5 +49,5 @@
     <%= @inner_content %>
   </div>
 
-  <%= live_render(@socket, ElixirSplitwiseWeb.DashboardLive.Modals.AddFriend, id: "add_friend") %>
+  <%= live_render(@socket, ElixirSplitwiseWeb.DashboardLive.Modals.AddFriend, id: "add_friend" ) %>
 </main>
